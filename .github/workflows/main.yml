@@ -13,31 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # Install Cypress
-      - name: Install Cypress
-        run: npm install cypress --save-dev
+      - name: Ensure Cypress binary has execution permissions
+        run: chmod +x ./node_modules/.bin/cypress
 
-      # Run Cypress tests
       - name: Run Cypress tests
         run: npx cypress run
         env:
           CI: true
 
-      # Archive Cypress videos and screenshots
       - name: Upload Cypress artifacts
         if: always()
         uses: actions/upload-artifact@v3
@@ -47,7 +41,6 @@ jobs:
             cypress/videos
             cypress/screenshots
 
-      # Report test results
       - name: Publish test results
         if: always()
         uses: actions/upload-artifact@v3
